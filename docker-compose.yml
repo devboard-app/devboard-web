@@ -1,0 +1,26 @@
+name: devboard
+
+services:
+  devboard-web:
+    build:
+      context: .
+    container_name: devboard-web
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      AUTH_SERVICE_URL: http://devboard-auth:8000
+      CORE_SERVICE_URL: http://devboard-core:8000
+      WORK_SERVICE_URL: http://devboard-work:8000
+      ANALYTICS_SERVICE_URL: http://devboard-analytics:8000
+      ATTACHMENTS_SERVICE_URL: http://devboard-attachments:8000
+      INTEGRATIONS_SERVICE_URL: http://devboard-integrations:8000
+      REDIS_URL: redis://devboard-redis:6379/1
+    ports:
+      - "8008:8000"
+    networks:
+      - devboard-network
+
+networks:
+  devboard-network:
+    name: devboard-network
+    external: true
