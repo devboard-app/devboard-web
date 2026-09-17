@@ -5,7 +5,6 @@
 {% block content %}
 <h1>Check your email</h1>
 <p>We sent a verification link to your email address. Click it to activate your account.</p>
-<p>
-    Didn't get it? <a href="/resend-verification/">Resend the verification email</a>.
-</p>
+<p>Didn't get it?</p>
+<a href="/resend-verification/?email={{ email|urlencode }}" class="btn btn-outline-secondary">Resend the verification email</a>
 {% endblock %}

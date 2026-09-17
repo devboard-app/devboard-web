@@ -41,7 +41,7 @@ async def register_view(request):
         except ServiceError as exc:
             return render(request, 'accounts/register.html', {'error': exc.detail, 'errors': exc.errors, 'email': email})
 
-        return render(request, 'accounts/register_done.html')
+        return render(request, 'accounts/register_done.html', {'email': email})
 
     return render(request, 'accounts/register.html')
 
@@ -66,7 +66,7 @@ async def resend_verification_view(request):
 
         return render(request, 'accounts/resend_verification.html', {'sent': True})
 
-    return render(request, 'accounts/resend_verification.html')
+    return render(request, 'accounts/resend_verification.html', {'email': request.GET.get('email', '')})
 
 async def forgot_password_view(request):
     if request.method == 'POST':
