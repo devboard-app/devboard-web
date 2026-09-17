@@ -17,7 +17,6 @@ SERVICE_URLS = {
     "integrations": settings.INTEGRATIONS_SERVICE_URL,
 }
 
-_redis_client = aioredis.from_url(settings.REDIS_URL)
 
 
 def raise_for_status(response: httpx.Response) -> None:
@@ -64,18 +63,18 @@ async def _perform_refresh(request) -> None:
 async def _refresh_access_token(request) -> None:
     if not needs_refresh(request):
         return
-
-    lock = _redis_client.lock(f"refresh-lock:{_lock_key(request)}", timeout=5, blocking_timeout=5)
-    async with lock:
-        if needs_refresh(request):
-            await _perform_refresh(request)
+    
+    async with (aioredis.from_url(settings.REDIS_URL) as redis_client,
+         redis_client.lock(f"refresh-lock:{_lock_key(request)}", timeout=5, blocking_timeout=5)):
+            if needs_refresh(request):
+                await _perform_refresh(request)
 
 
 async def _force_refresh(request, failed_token: str) -> None:
-    lock = _redis_client.lock(f"refresh-lock:{_lock_key(request)}", timeout=5, blocking_timeout=5)
-    async with lock:
-        if request.session.get('access_token') == failed_token:
-            await _perform_refresh(request)
+    async with (aioredis.from_url(settings.REDIS_URL) as redis_client,
+        redis_client.lock(f"refresh-lock:{_lock_key(request)}", timeout=5, blocking_timeout=5)):
+            if request.session.get('access_token') == failed_token:
+                await _perform_refresh(request)
 
 
 async def _do_request(request, method: str, service: str, path: str, **kwargs) -> httpx.Response:
@@ -103,7 +102,7 @@ async def call(request, method: str, service: str, path: str, **kwargs) -> httpx
     try:
         return await _do_request(request, method, service, path, **kwargs)
     except ServiceError as exc:
-        if exc.status_code != 401:
+        if exc.status_code != 401 or not used_token:
             raise
         await _force_refresh(request, used_token)
         return await _do_request(request, method, service, path, **kwargs)
