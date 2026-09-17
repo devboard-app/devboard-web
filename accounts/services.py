@@ -1,0 +1,23 @@
+from datetime import datetime, timedelta, timezone
+
+from web.services.client import call
+from web.services.exceptions import ServiceError
+
+
+async def login(request, email: str, password: str) -> None:
+    response = await call(request, 'POST', 'auth', '/auth/login/', json={'email': email, 'password': password})
+    data = response.json()
+
+    expires_at = datetime.now(timezone.utc) + timedelta(seconds=data['expires_in'])
+    request.session['access_token'] = data['access_token']
+    request.session['refresh_token'] = data['refresh_token']
+    request.session['access_token_expires_at'] = expires_at.isoformat()
+
+async def logout(request) -> None:
+    refresh_token = request.session.get('refresh_token')
+    if refresh_token:
+        try:
+            await call(request, 'POST', 'auth', '/auth/logout/', json={'refresh_token': refresh_token})
+        except ServiceError:
+            pass # user should still get logged out locally even if this fails
+    request.session.flush()
