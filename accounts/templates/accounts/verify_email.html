@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Verify email{% endblock %}
+
+{% block content %}
+<h1>Email verification</h1>
+{% if verified %}
+    <div class="alert alert-success">Your email is verified. You can log in now.</div>
+    <a href="/login/" class="btn btn-primary">Log in</a>
+{% else %}
+    <div class="alert alert-danger">{{ error }}</div>
+    <p><a href="/resend-verification/">Request a new verification email</a></p>
+{% endif %}
+{% endblock %}
