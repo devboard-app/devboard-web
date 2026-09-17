@@ -1,10 +1,17 @@
 import json
 
 from django.http import JsonResponse
+from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
 
 from web.services.client import call
 from web.services.exceptions import ServiceError
+
+
+async def upload_widget_test_view(request):
+    if not request.session.get('access_token'):
+        return redirect('/login/')
+    return render(request, 'attachments/upload_test.html')
 
 
 @require_POST

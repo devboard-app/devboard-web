@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Upload widget test{% endblock %}
+
+{% block content %}
+<h1>Upload widget test</h1>
+<p class="text-muted">
+    Manual test harness for the reusable attach-a-file widget (PR4). Not a
+    PRD feature on its own -- comments and profile-avatar uploads will
+    embed <code>attachments/upload_widget.html</code> instead once those
+    pages exist.
+</p>
+{% include "attachments/upload_widget.html" %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'attachments/upload.js' %}"></script>
+{% endblock %}
