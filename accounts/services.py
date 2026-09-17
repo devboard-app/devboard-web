@@ -22,3 +22,18 @@ async def logout(request) -> None:
         except ServiceError:
             pass # user should still get logged out locally even if this fails
     request.session.flush()
+
+async def register(request, email: str, password: str) -> None:
+    await call(request, 'POST', 'auth', '/auth/register/', json={'email': email, 'password': password})
+
+async def verify_email(request, token: str) -> None:
+    await call(request, 'GET', 'auth', '/auth/verify-email/', params={'token': token})
+
+async def resend_verification(request, email: str) -> None:
+    await call(request, 'POST', 'auth', '/auth/resend-verification/', json={'email': email})
+
+async def forgot_password(request, email: str) -> None:
+    await call(request, 'POST', 'auth', '/auth/forgot-password/', json={'email': email})
+
+async def reset_password(request, token: str, password: str) -> None:
+    await call(request, 'POST', 'auth', '/auth/reset-password/', json={'token': token, 'password': password})

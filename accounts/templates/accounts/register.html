@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load form_errors %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<h1>Register</h1>
+{% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+<form method="post" class="col-sm-6">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" name="email" value="{{ email|default:'' }}" class="form-control{% if errors|has_error:'email' %} is-invalid{% endif %}" required>
+        {% field_errors errors 'email' %}
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" name="password" class="form-control{% if errors|has_error:'password' %} is-invalid{% endif %}" required>
+        {% field_errors errors 'password' %}
+    </div>
+    <button type="submit" class="btn btn-primary">Register</button>
+</form>
+<p class="mt-3"><a href="/login/">Already have an account? Log in</a></p>
+{% endblock %}
