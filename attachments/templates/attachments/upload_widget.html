@@ -1,0 +1,14 @@
+{% comment %}
+Include once per page. The page's own extra_js block must load
+attachments/upload.js -- not included here, so a page with several of
+these (e.g. one per comment being edited) doesn't re-run the script and
+double-bind its listeners.
+{% endcomment %}
+<div data-upload-widget{% if context_type %} data-context-type="{{ context_type }}"{% endif %}{% if context_id %} data-context-id="{{ context_id }}"{% endif %}>
+    <form data-upload-form class="d-flex align-items-center gap-2">
+        {% csrf_token %}
+        <input type="file" data-upload-input class="form-control form-control-sm" required>
+        <button type="submit" class="btn btn-outline-secondary btn-sm">Upload</button>
+    </form>
+    <div data-upload-status class="form-text"></div>
+</div>
