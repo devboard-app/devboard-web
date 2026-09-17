@@ -11,6 +11,7 @@
             <a class="navbar-brand" href="/">DevBoard</a>
             {% if request.session.email %}
             <div class="d-flex align-items-center">
+                <a href="/teams/" class="me-3">Teams</a>
                 <span class="me-3">{{ request.session.email }}</span>
                 <form method="post" action="/logout/" class="d-inline m-0">
                     {% csrf_token %}
@@ -22,6 +23,11 @@
     </nav>
 
     <div class="container mt-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
         {% block content %}{% endblock %}
     </div>
 

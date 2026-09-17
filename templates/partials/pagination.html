@@ -1,0 +1,12 @@
+{% if has_prev or has_next %}
+<nav class="mt-3">
+    <ul class="pagination">
+        <li class="page-item{% if not has_prev %} disabled{% endif %}">
+            <a class="page-link" href="?limit={{ limit }}&offset={{ prev_offset }}">Previous</a>
+        </li>
+        <li class="page-item{% if not has_next %} disabled{% endif %}">
+            <a class="page-link" href="?limit={{ limit }}&offset={{ next_offset }}">Next</a>
+        </li>
+    </ul>
+</nav>
+{% endif %}

@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'dashboard',
+    'teams',
     'projects',
     'attachments',
 ]
@@ -139,6 +140,13 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+# Bootstrap uses "danger", Django's default message tag is "error".
+from django.contrib.messages import constants as message_constants  # noqa: E402
+
+MESSAGE_TAGS = {
+    message_constants.ERROR: 'danger',
+}
 
 
 # Static files (CSS, JavaScript, Images)
