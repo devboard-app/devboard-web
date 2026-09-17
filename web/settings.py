@@ -31,6 +31,26 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env.bool('DEBUG', default=False)
 ALLOWED_HOSTS = list(env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1', 'devboard-web'])) #type: ignore
 
+AUTH_SERVICE_URL = env('AUTH_SERVICE_URL')
+CORE_SERVICE_URL = env('CORE_SERVICE_URL')
+WORK_SERVICE_URL = env('WORK_SERVICE_URL')
+ANALYTICS_SERVICE_URL = env('ANALYTICS_SERVICE_URL')
+ATTACHMENTS_SERVICE_URL = env('ATTACHMENTS_SERVICE_URL')
+INTEGRATIONS_SERVICE_URL = env('INTEGRATIONS_SERVICE_URL')
+REDIS_URL = env('REDIS_URL')
+
+CACHES ={
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': env('REDIS_URL'),
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        },
+    }
+}
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 7 # 7 days, matched devboard-auth's REFRESH_TOKEN_EXPIRE_DAYS
+
 # SECURITY WARNING: don't run with debug turned on in production!
 
 # Application definition
