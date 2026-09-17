@@ -1,9 +1,22 @@
 {% extends "base.html" %}
 
-{% block title %}Project{% endblock %}
+{% block title %}{{ project.name }}{% endblock %}
 
 {% block content %}
-<h1>Tickets</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="mb-0">{{ project.name }} <span class="text-muted">({{ project.key }})</span></h1>
+        <p class="text-muted mb-0">{{ project.description }}</p>
+    </div>
+    <div>
+        {% if is_lead %}
+        <a href="/teams/{{ team_id }}/projects/{{ project.id }}/edit/" class="btn btn-outline-secondary">Edit</a>
+        {% endif %}
+        <a href="/teams/{{ team_id }}/projects/{{ project.id }}/members/" class="btn btn-outline-secondary">Members</a>
+    </div>
+</div>
+
+<h2>Tickets</h2>
 <table class="table">
     <thead>
         <tr>
