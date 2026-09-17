@@ -5,7 +5,7 @@
 
 {% block content %}
 <h1>Register</h1>
-{% if error %}
+{% if error and not errors %}
     <div class="alert alert-danger">{{ error }}</div>
 {% endif %}
 <form method="post" class="col-sm-6">

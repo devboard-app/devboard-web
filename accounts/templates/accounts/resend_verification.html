@@ -9,7 +9,7 @@
     <div class="alert alert-success">If that email exists and isn't verified yet, we've sent a new link.</div>
     <a href="/login/">Back to login</a>
 {% else %}
-    {% if error %}
+    {% if error and not errors %}
         <div class="alert alert-danger">{{ error }}</div>
     {% endif %}
     <form method="post" class="col-sm-6">
