@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'accounts',
     'dashboard',
     'projects',
+    'attachments',
 ]
 
 MIDDLEWARE = [
