@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Project{% endblock %}
+
+{% block content %}
+<h1>Tickets</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Key</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Priority</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for ticket in tickets %}
+        <tr>
+            <td>{{ ticket.key }}</td>
+            <td>{{ ticket.title }}</td>
+            <td>{{ ticket.status }}</td>
+            <td>{{ ticket.priority }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">No tickets yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>Activity</h2>
+{% if activity %}
+<ul class="list-group">
+    {% for actor in activity.actors %}
+    <li class="list-group-item">{{ actor.actor }} — {{ actor.total }} actions</li>
+    {% empty %}
+    <li class="list-group-item text-muted">No activity recorded for this project yet.</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p class="text-muted">Activity summary is temporarily unavailable.</p>
+{% endif %}
+{% endblock %}
