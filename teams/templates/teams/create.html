@@ -4,6 +4,12 @@
 {% block title %}Create team{% endblock %}
 
 {% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/teams/">Teams</a></li>
+        <li class="breadcrumb-item active">Create</li>
+    </ol>
+</nav>
 <h1>Create team</h1>
 {% if error and not errors %}
     <div class="alert alert-danger">{{ error }}</div>

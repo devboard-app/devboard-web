@@ -3,18 +3,32 @@
 {% block title %}{{ project.name }}{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/teams/">Teams</a></li>
+        <li class="breadcrumb-item"><a href="/teams/{{ team_id }}/">Team</a></li>
+        <li class="breadcrumb-item"><a href="/teams/{{ team_id }}/projects/">Projects</a></li>
+        <li class="breadcrumb-item active">{{ project.name }}</li>
+    </ol>
+</nav>
+<div class="d-flex justify-content-between align-items-center mb-2">
     <div>
         <h1 class="mb-0">{{ project.name }} <span class="text-muted">({{ project.key }})</span></h1>
         <p class="text-muted mb-0">{{ project.description }}</p>
     </div>
-    <div>
-        {% if is_lead %}
-        <a href="/teams/{{ team_id }}/projects/{{ project.id }}/edit/" class="btn btn-outline-secondary">Edit</a>
-        {% endif %}
-        <a href="/teams/{{ team_id }}/projects/{{ project.id }}/members/" class="btn btn-outline-secondary">Members</a>
-    </div>
+    {% if is_lead %}
+    <a href="/teams/{{ team_id }}/projects/{{ project.id }}/edit/" class="btn btn-outline-secondary btn-sm">Project settings</a>
+    {% endif %}
 </div>
+
+<ul class="nav nav-tabs mb-3">
+    <li class="nav-item">
+        <a class="nav-link active" href="/teams/{{ team_id }}/projects/{{ project.id }}/">Overview</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/teams/{{ team_id }}/projects/{{ project.id }}/members/">Members</a>
+    </li>
+</ul>
 
 <h2>Tickets</h2>
 <table class="table">
