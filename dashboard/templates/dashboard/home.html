@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head><title>Dashboard</title></head>
-<body>
-    <h1>Logged in as {{ user.email }}</h1>
-    <form method="post" action="/logout/">
-        {% csrf_token %}
-        <button type="submit">Logout</button>
-    </form>
-</body>
+{% extends "base.html" %}
 
-</html>
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h1>Logged in as {{ user.email }}</h1>
+{% endblock %}

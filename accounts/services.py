@@ -12,6 +12,7 @@ async def login(request, email: str, password: str) -> None:
     request.session['access_token'] = data['access_token']
     request.session['refresh_token'] = data['refresh_token']
     request.session['access_token_expires_at'] = expires_at.isoformat()
+    request.session['email'] = email
 
 async def logout(request) -> None:
     refresh_token = request.session.get('refresh_token')
