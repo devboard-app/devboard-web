@@ -1,0 +1,225 @@
+/* Design tokens ported from the devboard-design (Figma Make) prototype.
+   Overrides Bootstrap 5's own CSS custom properties, so every stock
+   component (buttons, badges, cards, nav) picks these up for free --
+   no new markup needed, just the variables Bootstrap already reads. */
+
+:root {
+    --bs-font-sans-serif: 'Inter', system-ui, -apple-system, sans-serif;
+
+    --bs-primary: #4f46e5;
+    --bs-primary-rgb: 79, 70, 229;
+    --bs-link-color: #4f46e5;
+    --bs-link-color-rgb: 79, 70, 229;
+    --bs-link-hover-color: #4338ca;
+    --bs-link-hover-color-rgb: 67, 56, 202;
+
+    --bs-border-radius: 0.5rem;
+    --bs-border-radius-sm: 0.375rem;
+    --bs-border-radius-lg: 0.75rem;
+
+    --bs-body-bg: #fafafa;
+    --bs-body-color: #27272a;
+    --bs-secondary-color: #71717a;
+    --bs-border-color: #e4e4e7;
+    --bs-tertiary-bg: #f4f4f5;
+
+    --db-sidebar-bg: #ffffff;
+    --db-sidebar-active-bg: #eef2ff;
+    --db-sidebar-active-color: #4338ca;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bs-body-bg: #09090b;
+        --bs-body-color: #e4e4e7;
+        --bs-secondary-color: #a1a1aa;
+        --bs-border-color: #27272a;
+        --bs-tertiary-bg: #18181b;
+        --bs-primary: #818cf8;
+        --bs-primary-rgb: 129, 140, 248;
+        --bs-link-color: #818cf8;
+        --bs-link-color-rgb: 129, 140, 248;
+
+        --db-sidebar-bg: #18181b;
+        --db-sidebar-active-bg: rgba(99, 102, 241, 0.15);
+        --db-sidebar-active-color: #a5b4fc;
+    }
+
+    body {
+        color-scheme: dark;
+    }
+
+    .card, .navbar, .list-group-item, .form-control, .form-select,
+    .table, .breadcrumb, .dropdown-menu {
+        background-color: var(--bs-tertiary-bg);
+        color: var(--bs-body-color);
+        border-color: var(--bs-border-color);
+    }
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+}
+
+.btn {
+    border-radius: var(--bs-border-radius);
+}
+
+/* Bootstrap's compiled CSS bakes literal hex values into each component's
+   own per-component variables (--bs-btn-bg, --bs-badge-color, etc) at
+   build time -- they don't chain to the root --bs-primary token above,
+   so buttons/badges need their own override to pick up the new palette. */
+.btn-primary {
+    --bs-btn-bg: var(--bs-primary);
+    --bs-btn-border-color: var(--bs-primary);
+    --bs-btn-hover-bg: var(--bs-link-hover-color);
+    --bs-btn-hover-border-color: var(--bs-link-hover-color);
+    --bs-btn-active-bg: var(--bs-link-hover-color);
+    --bs-btn-active-border-color: var(--bs-link-hover-color);
+    --bs-btn-disabled-bg: var(--bs-primary);
+    --bs-btn-disabled-border-color: var(--bs-primary);
+}
+
+.btn-outline-primary {
+    --bs-btn-color: var(--bs-primary);
+    --bs-btn-border-color: var(--bs-primary);
+    --bs-btn-hover-bg: var(--bs-primary);
+    --bs-btn-hover-border-color: var(--bs-primary);
+    --bs-btn-active-bg: var(--bs-primary);
+    --bs-btn-active-border-color: var(--bs-primary);
+}
+
+.badge.text-bg-primary {
+    --bs-badge-color: #fff;
+    background-color: var(--bs-primary) !important;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.15);
+}
+
+.card, .table, .breadcrumb {
+    border-radius: var(--bs-border-radius);
+}
+
+/* App shell: sidebar + content, ported from AppShell.tsx's layout */
+.app-shell {
+    display: flex;
+    min-height: 100vh;
+}
+
+.app-sidebar {
+    width: 15rem;
+    flex-shrink: 0;
+    background: var(--db-sidebar-bg);
+    border-right: 1px solid var(--bs-border-color);
+    padding: 0.75rem;
+}
+
+.app-sidebar:empty {
+    display: none;
+}
+
+.app-main {
+    flex: 1;
+    min-width: 0;
+    padding: 1.5rem;
+}
+
+.sidebar-section-title {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--bs-secondary-color);
+    padding: 0 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.5rem;
+    border-radius: var(--bs-border-radius-sm);
+    font-size: 0.875rem;
+    color: var(--bs-secondary-color);
+    text-decoration: none;
+    margin-bottom: 2px;
+}
+
+.sidebar-link:hover {
+    background: var(--bs-tertiary-bg);
+    color: var(--bs-body-color);
+}
+
+.sidebar-link.active {
+    background: var(--db-sidebar-active-bg);
+    color: var(--db-sidebar-active-color);
+    font-weight: 500;
+}
+
+.sidebar-sublink {
+    display: block;
+    padding: 0.25rem 0.5rem 0.25rem 1.5rem;
+    font-size: 0.8125rem;
+    color: var(--bs-secondary-color);
+    text-decoration: none;
+    border-radius: var(--bs-border-radius-sm);
+}
+
+.sidebar-sublink:hover {
+    color: var(--bs-body-color);
+}
+
+.sidebar-sublink.active {
+    color: var(--db-sidebar-active-color);
+    font-weight: 500;
+}
+
+/* Avatar circle: initials on a deterministic color, ported from AppShell.tsx's Avatar() */
+.avatar-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 50%;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.75rem;
+    width: 1.75rem;
+    height: 1.75rem;
+}
+
+.avatar-circle-sm {
+    width: 1.375rem;
+    height: 1.375rem;
+    font-size: 0.625rem;
+}
+
+/* Centered auth card, ported from AuthScreen.tsx */
+.auth-wrap {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 75vh;
+}
+
+.auth-logo {
+    width: 2rem;
+    height: 2rem;
+    border-radius: var(--bs-border-radius);
+    background: var(--bs-primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 700;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 24rem;
+}

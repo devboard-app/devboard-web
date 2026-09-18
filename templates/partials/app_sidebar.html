@@ -1,0 +1,16 @@
+{% comment %}
+Expects: team_id, team_name (optional), project (optional dict with id/key),
+sidebar_active ('team' | 'projects' | 'overview' | 'members').
+{% endcomment %}
+<div class="px-2 py-2 mb-2 border-bottom">
+    <a href="/teams/{{ team_id }}/" class="sidebar-link fw-semibold{% if sidebar_active == 'team' %} active{% endif %}">
+        {{ team_name|default:"Team" }}
+    </a>
+</div>
+<a href="/teams/{{ team_id }}/projects/" class="sidebar-link{% if sidebar_active == 'projects' %} active{% endif %}">Projects</a>
+
+{% if project %}
+<p class="sidebar-section-title mt-3">{{ project.key }}</p>
+<a href="/teams/{{ team_id }}/projects/{{ project.id }}/" class="sidebar-sublink{% if sidebar_active == 'overview' %} active{% endif %}">Overview</a>
+<a href="/teams/{{ team_id }}/projects/{{ project.id }}/members/" class="sidebar-sublink{% if sidebar_active == 'members' %} active{% endif %}">Members</a>
+{% endif %}

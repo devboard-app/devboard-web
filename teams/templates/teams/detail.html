@@ -1,38 +1,35 @@
 {% extends "base.html" %}
+{% load ui_extras %}
 
 {% block title %}{{ team.name }}{% endblock %}
 
+{% block sidebar %}{% include "partials/app_sidebar.html" %}{% endblock %}
+
 {% block content %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/teams/">Teams</a></li>
-        <li class="breadcrumb-item active">{{ team.name }}</li>
-    </ol>
-</nav>
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h1 class="mb-0">{{ team.name }}</h1>
-        <p class="text-muted mb-0">{{ team.description }}</p>
+        <p class="text-secondary mb-0">{{ team.description }}</p>
     </div>
     <div>
-        <a href="/teams/{{ team.id }}/projects/" class="btn btn-outline-secondary">Projects</a>
         {% if is_manager %}
-        <a href="/teams/{{ team.id }}/edit/" class="btn btn-outline-secondary">Edit</a>
+        <a href="/teams/{{ team.id }}/edit/" class="btn btn-outline-secondary btn-sm">Edit</a>
         {% endif %}
         {% if my_role and not is_owner %}
         <form method="post" action="/teams/{{ team.id }}/leave/" class="d-inline">
             {% csrf_token %}
-            <button type="submit" class="btn btn-outline-danger">Leave team</button>
+            <button type="submit" class="btn btn-outline-danger btn-sm">Leave team</button>
         </form>
         {% endif %}
     </div>
 </div>
 
-<h2>Members</h2>
+<h2 class="h5">Members</h2>
 {% if members is None %}
-<p class="text-muted">Member list is temporarily unavailable.</p>
+<p class="text-secondary">Member list is temporarily unavailable.</p>
 {% else %}
-<table class="table">
+<div class="card">
+<table class="table mb-0">
     <thead>
         <tr>
             <th>User</th>
@@ -43,7 +40,7 @@
     <tbody>
         {% for member in members %}
         <tr>
-            <td>{{ member.username }}</td>
+            <td class="d-flex align-items-center gap-2">{% avatar member.username "sm" %} {{ member.username }}</td>
             <td>
                 {% if is_manager and member.role != 'owner' %}
                 <form method="post" action="/teams/{{ team.id }}/members/{{ member.user_id }}/role/" class="d-flex gap-1">
@@ -56,7 +53,7 @@
                     <button type="submit" class="btn btn-outline-secondary btn-sm">Save</button>
                 </form>
                 {% else %}
-                {{ member.role }}
+                <span class="badge text-bg-light border">{{ member.role }}</span>
                 {% endif %}
             </td>
             {% if is_manager %}
@@ -73,9 +70,10 @@
         {% endfor %}
     </tbody>
 </table>
+</div>
 
 {% if is_manager %}
-<h3>Add member</h3>
+<h2 class="h5 mt-4">Add member</h2>
 <form method="post" action="/teams/{{ team.id }}/members/add/" class="col-sm-6 d-flex gap-2">
     {% csrf_token %}
     <input type="email" name="email" placeholder="Email" class="form-control" required>

@@ -63,8 +63,12 @@ async def team_detail_view(request, team_id):
         my_membership = next((m for m in members if m['user_id'] == my_user_id), None)
         my_role = my_membership['role'] if my_membership else None
 
+    team = team_result.json()
     return render(request, 'teams/detail.html', {
-        'team': team_result.json(),
+        'team': team,
+        'team_id': team_id,
+        'team_name': team['name'],
+        'sidebar_active': 'team',
         'members': members,
         'my_role': my_role,
         'is_manager': my_role in MANAGER_ROLES,
@@ -89,7 +93,8 @@ async def team_edit_view(request, team_id):
             await call(request, 'PATCH', 'work', f'/api/teams/{team_id}/', json={'name': name, 'description': description})
         except ServiceError as exc:
             team = {'id': team_id, 'name': name, 'description': description}
-            return render(request, 'teams/edit.html', {'error': exc.detail, 'errors': exc.errors, 'team': team})
+            context = {'error': exc.detail, 'errors': exc.errors, 'team': team, 'team_id': team_id, 'team_name': name, 'sidebar_active': 'team'}
+            return render(request, 'teams/edit.html', context)
 
         return redirect(f'/teams/{team_id}/')
 
@@ -98,8 +103,15 @@ async def team_edit_view(request, team_id):
     except ServiceError as exc:
         return render(request, 'error.html', {'detail': exc.detail}, status=exc.status_code)
 
+    team = response.json()
     my_role = await get_my_team_role(request, team_id)
-    return render(request, 'teams/edit.html', {'team': response.json(), 'is_owner': my_role == 'owner'})
+    return render(request, 'teams/edit.html', {
+        'team': team,
+        'team_id': team_id,
+        'team_name': team['name'],
+        'sidebar_active': 'team',
+        'is_owner': my_role == 'owner',
+    })
 
 
 @require_POST

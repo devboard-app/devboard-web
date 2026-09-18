@@ -1,27 +1,14 @@
 {% extends "base.html" %}
+{% load ui_extras %}
 
 {% block title %}Project members{% endblock %}
 
+{% block sidebar %}{% include "partials/app_sidebar.html" %}{% endblock %}
+
 {% block content %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/teams/">Teams</a></li>
-        <li class="breadcrumb-item"><a href="/teams/{{ team_id }}/">Team</a></li>
-        <li class="breadcrumb-item"><a href="/teams/{{ team_id }}/projects/">Projects</a></li>
-        <li class="breadcrumb-item"><a href="/teams/{{ team_id }}/projects/{{ project_id }}/">Project</a></li>
-        <li class="breadcrumb-item active">Members</li>
-    </ol>
-</nav>
-<h1 class="mb-2">Members</h1>
-<ul class="nav nav-tabs mb-3">
-    <li class="nav-item">
-        <a class="nav-link" href="/teams/{{ team_id }}/projects/{{ project_id }}/">Overview</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link active" href="/teams/{{ team_id }}/projects/{{ project_id }}/members/">Members</a>
-    </li>
-</ul>
-<table class="table">
+<h1 class="mb-4">{{ project.name }} <span class="text-secondary fs-6">Members</span></h1>
+<div class="card">
+<table class="table mb-0">
     <thead>
         <tr>
             <th>User</th>
@@ -32,7 +19,7 @@
     <tbody>
         {% for member in members %}
         <tr>
-            <td>{{ member.username }}</td>
+            <td class="d-flex align-items-center gap-2">{% avatar member.username "sm" %} {{ member.username }}</td>
             <td>
                 {% if is_lead %}
                 <form method="post" action="/teams/{{ team_id }}/projects/{{ project_id }}/members/{{ member.user_id }}/role/" class="d-flex gap-1">
@@ -44,7 +31,7 @@
                     <button type="submit" class="btn btn-outline-secondary btn-sm">Save</button>
                 </form>
                 {% else %}
-                {{ member.role }}
+                <span class="badge text-bg-light border">{{ member.role }}</span>
                 {% endif %}
             </td>
             {% if is_lead %}
@@ -57,13 +44,14 @@
             {% endif %}
         </tr>
         {% empty %}
-        <tr><td colspan="3">No members yet.</td></tr>
+        <tr><td colspan="3" class="text-secondary">No members yet.</td></tr>
         {% endfor %}
     </tbody>
 </table>
+</div>
 
 {% if is_lead %}
-<h2>Add member</h2>
+<h2 class="h5 mt-4">Add member</h2>
 {% if addable %}
 <form method="post" action="/teams/{{ team_id }}/projects/{{ project_id }}/members/add/" class="col-sm-6 d-flex gap-2">
     {% csrf_token %}
@@ -79,7 +67,7 @@
     <button type="submit" class="btn btn-primary text-nowrap">Add</button>
 </form>
 {% else %}
-<p class="text-muted">Every team member is already on this project.</p>
+<p class="text-secondary">Every team member is already on this project.</p>
 {% endif %}
 {% endif %}
 {% endblock %}

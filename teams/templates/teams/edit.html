@@ -3,14 +3,9 @@
 
 {% block title %}Edit {{ team.name }}{% endblock %}
 
+{% block sidebar %}{% include "partials/app_sidebar.html" %}{% endblock %}
+
 {% block content %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/teams/">Teams</a></li>
-        <li class="breadcrumb-item"><a href="/teams/{{ team.id }}/">{{ team.name }}</a></li>
-        <li class="breadcrumb-item active">Edit</li>
-    </ol>
-</nav>
 <h1>Edit team</h1>
 {% if error and not errors %}
     <div class="alert alert-danger">{{ error }}</div>
