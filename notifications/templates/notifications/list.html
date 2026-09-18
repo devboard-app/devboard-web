@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load ui_extras %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<div class="notif-container">
+    <div class="d-flex align-items-center gap-2 mb-3">
+        <h1 class="h5 mb-0">Notifications</h1>
+        {% if unread %}
+        <span class="badge text-bg-primary rounded-pill">{{ unread|length }} new</span>
+        {% endif %}
+        {% if unread %}
+        <form method="post" action="/notifications/read-all/" class="ms-auto">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-link btn-sm p-0">Mark all read</button>
+        </form>
+        {% endif %}
+    </div>
+
+    {% if not results %}
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <div class="auth-icon-circle" style="background: var(--bs-tertiary-bg); color: var(--bs-secondary-color);">
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                    <path d="M11 3a6 6 0 00-6 6v3L3 14h18l-2-2V9a6 6 0 00-6-6zM9 18a2 2 0 004 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <p class="fw-medium text-secondary mb-0">All caught up</p>
+            <p class="small text-secondary">No notifications right now</p>
+        </div>
+    </div>
+    {% else %}
+    <div class="card">
+        <div class="card-body py-0">
+            {% if unread %}
+            <p class="notif-section-title">New</p>
+            {% for n in unread %}
+            <form method="post" action="/notifications/{{ n.id }}/read/">
+                {% csrf_token %}
+                <button type="submit" class="notif-row unread">
+                    {% include "notifications/_icon.html" with type=n.type %}
+                    <span class="flex-grow-1 min-width-0">
+                        <span class="notif-message">{{ n.message }}</span>
+                        <span class="notif-meta">{{ n.created_at|timeago }}</span>
+                    </span>
+                    <span class="notif-dot"></span>
+                </button>
+            </form>
+            {% endfor %}
+            {% endif %}
+
+            {% if earlier %}
+            <p class="notif-section-title{% if unread %} mt-2{% endif %}">Earlier</p>
+            {% for n in earlier %}
+            <div class="notif-row d-flex">
+                {% include "notifications/_icon.html" with type=n.type %}
+                <span class="flex-grow-1 min-width-0">
+                    <span class="notif-message text-secondary">{{ n.message }}</span>
+                    <span class="notif-meta">{{ n.created_at|timeago }}</span>
+                </span>
+                <form method="post" action="/notifications/{{ n.id }}/delete/">
+                    {% csrf_token %}
+                    <button type="submit" class="notif-dismiss" title="Delete">&times;</button>
+                </form>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    {% include "partials/pagination.html" %}
+    {% endif %}
+</div>
+{% endblock %}

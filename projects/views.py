@@ -6,6 +6,7 @@ from django.views.decorators.http import require_POST
 
 from web.services.client import call
 from web.services.exceptions import ServiceError
+from web.services.notifications import get_unread_count
 from web.services.pagination import page_context
 from web.services.teams import get_my_team_role, get_team_name
 from web.services.users import resolve_usernames
@@ -20,17 +21,20 @@ async def project_list_view(request, team_id):
     except ServiceError as exc:
         return render(request, 'error.html', {'detail': exc.detail}, status=exc.status_code)
 
-    my_team_role = await get_my_team_role(request, team_id)
+    my_team_role, team_name, unread_count = await asyncio.gather(
+        get_my_team_role(request, team_id), get_team_name(request, team_id), get_unread_count(request),
+    )
     context = page_context(response.json())
     context['team_id'] = team_id
-    context['team_name'] = await get_team_name(request, team_id)
+    context['team_name'] = team_name
     context['sidebar_active'] = 'projects'
+    context['unread_count'] = unread_count
     context['can_create'] = my_team_role in ('owner', 'admin')
     return render(request, 'projects/list.html', context)
 
 
 async def project_create_view(request, team_id):
-    team_name = await get_team_name(request, team_id)
+    team_name, unread_count = await asyncio.gather(get_team_name(request, team_id), get_unread_count(request))
 
     if request.method == 'POST':
         name = request.POST.get('name', '')
@@ -42,22 +46,25 @@ async def project_create_view(request, team_id):
         except ServiceError as exc:
             context = {
                 'error': exc.detail, 'errors': exc.errors, 'team_id': team_id, 'team_name': team_name,
-                'sidebar_active': 'projects', 'name': name, 'key': key, 'description': description,
+                'sidebar_active': 'projects', 'unread_count': unread_count, 'name': name, 'key': key, 'description': description,
             }
             return render(request, 'projects/create.html', context)
 
         return redirect(f"/teams/{team_id}/projects/{response.json()['id']}/")
 
-    return render(request, 'projects/create.html', {'team_id': team_id, 'team_name': team_name, 'sidebar_active': 'projects'})
+    return render(request, 'projects/create.html', {
+        'team_id': team_id, 'team_name': team_name, 'sidebar_active': 'projects', 'unread_count': unread_count,
+    })
 
 
 async def project_detail_view(request, team_id, project_id):
-    project_result, tickets_result, activity_result, members_result, team_name = await asyncio.gather(
+    project_result, tickets_result, activity_result, members_result, team_name, unread_count = await asyncio.gather(
         call(request, 'GET', 'work', f'/api/teams/{team_id}/projects/{project_id}/'),
         call(request, 'GET', 'work', f'/api/teams/{team_id}/projects/{project_id}/tickets/'),
         call(request, 'GET', 'analytics', f'/reports/projects/{project_id}/activity/summary/'),
         call(request, 'GET', 'work', f'/api/teams/{team_id}/projects/{project_id}/members/', params={'limit': 100}),
         get_team_name(request, team_id),
+        get_unread_count(request),
         return_exceptions=True,
     )
 
@@ -81,6 +88,7 @@ async def project_detail_view(request, team_id, project_id):
         'team_id': team_id,
         'team_name': team_name,
         'sidebar_active': 'overview',
+        'unread_count': unread_count if isinstance(unread_count, int) else 0,
         'project': project_result.json(),
         'tickets': tickets_result.json()['results'],
         'activity': activity,
@@ -89,7 +97,7 @@ async def project_detail_view(request, team_id, project_id):
 
 
 async def project_edit_view(request, team_id, project_id):
-    team_name = await get_team_name(request, team_id)
+    team_name, unread_count = await asyncio.gather(get_team_name(request, team_id), get_unread_count(request))
 
     if request.method == 'POST':
         if request.POST.get('action') == 'delete':
@@ -110,7 +118,7 @@ async def project_edit_view(request, team_id, project_id):
             project = {'id': project_id, 'name': name, 'key': key, 'description': description}
             context = {
                 'error': exc.detail, 'errors': exc.errors, 'team_id': team_id, 'team_name': team_name,
-                'sidebar_active': 'overview', 'project': project,
+                'sidebar_active': 'overview', 'unread_count': unread_count, 'project': project,
             }
             return render(request, 'projects/edit.html', context)
 
@@ -122,16 +130,18 @@ async def project_edit_view(request, team_id, project_id):
         return render(request, 'error.html', {'detail': exc.detail}, status=exc.status_code)
 
     return render(request, 'projects/edit.html', {
-        'team_id': team_id, 'team_name': team_name, 'sidebar_active': 'overview', 'project': response.json(),
+        'team_id': team_id, 'team_name': team_name, 'sidebar_active': 'overview', 'unread_count': unread_count,
+        'project': response.json(),
     })
 
 
 async def project_members_view(request, team_id, project_id):
-    members_result, team_members_result, project_result, team_name = await asyncio.gather(
+    members_result, team_members_result, project_result, team_name, unread_count = await asyncio.gather(
         call(request, 'GET', 'work', f'/api/teams/{team_id}/projects/{project_id}/members/', params={'limit': 100}),
         call(request, 'GET', 'work', f'/api/teams/{team_id}/members/', params={'limit': 100}),
         call(request, 'GET', 'work', f'/api/teams/{team_id}/projects/{project_id}/'),
         get_team_name(request, team_id),
+        get_unread_count(request),
         return_exceptions=True,
     )
 
@@ -163,6 +173,7 @@ async def project_members_view(request, team_id, project_id):
         'team_id': team_id,
         'team_name': team_name,
         'sidebar_active': 'members',
+        'unread_count': unread_count if isinstance(unread_count, int) else 0,
         'project': project_result.json(),
         'project_id': project_id,
         'members': members,

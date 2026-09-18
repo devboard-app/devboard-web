@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from django import template
 from django.utils.html import format_html
 
@@ -40,3 +42,22 @@ def team_avatar(name):
         '<span class="avatar-square" style="background-color: {}">{}</span>',
         color, name[0].upper(),
     )
+
+
+@register.filter
+def timeago(iso_string):
+    """'Xm/Xh/Xd ago', ported from AppShell.tsx and NotificationsPanel.tsx's
+    identical timeAgo() helpers."""
+    if not iso_string:
+        return ''
+    try:
+        then = datetime.fromisoformat(iso_string.replace('Z', '+00:00'))
+    except ValueError:
+        return ''
+    mins = int((datetime.now(timezone.utc) - then).total_seconds() // 60)
+    if mins < 60:
+        return f'{max(mins, 0)}m ago'
+    hours = mins // 60
+    if hours < 24:
+        return f'{hours}h ago'
+    return f'{hours // 24}d ago'

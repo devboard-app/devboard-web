@@ -61,6 +61,13 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
+/* Bootstrap has no min-width-0 utility (unlike Tailwind) -- needed so
+   flex children with text-truncate actually truncate instead of
+   overflowing, since flex items default to min-width: auto. */
+.min-width-0 {
+    min-width: 0;
+}
+
 .btn {
     border-radius: var(--bs-border-radius);
 }
@@ -115,6 +122,9 @@ body {
     background: var(--db-sidebar-bg);
     border-right: 1px solid var(--bs-border-color);
     padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 .app-sidebar:empty {
@@ -351,4 +361,118 @@ body {
 .auth-icon-circle.danger {
     background: rgba(220, 38, 38, 0.1);
     color: #dc2626;
+}
+
+/* Notifications list, ported from NotificationsPanel.tsx (rendered as a full
+   page here instead of a slide-over panel -- that needs JS this project
+   doesn't use). */
+.notif-container {
+    max-width: 32rem;
+}
+
+.notif-section-title {
+    padding: 0.5rem 0;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--bs-secondary-color);
+    border-bottom: 1px solid var(--bs-border-color);
+}
+
+.notif-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.875rem 0;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--bs-border-color);
+    text-align: left;
+}
+
+button.notif-row {
+    cursor: pointer;
+}
+
+button.notif-row:hover {
+    background: var(--bs-tertiary-bg);
+}
+
+.notif-row.unread {
+    background: rgba(var(--bs-primary-rgb), 0.05);
+}
+
+.notif-icon {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--bs-tertiary-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.notif-icon.type-mention { color: #4f46e5; }
+.notif-icon.type-assignment { color: #2563eb; }
+.notif-icon.type-comment { color: #059669; }
+.notif-icon.type-status_change { color: #d97706; }
+
+.notif-message {
+    font-size: 0.875rem;
+    line-height: 1.35;
+}
+
+.notif-row.unread .notif-message {
+    font-weight: 500;
+}
+
+.notif-meta {
+    font-size: 0.6875rem;
+    color: var(--bs-secondary-color);
+    margin-top: 0.25rem;
+    display: block;
+}
+
+.notif-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--bs-primary);
+    flex-shrink: 0;
+    margin-top: 0.375rem;
+}
+
+.notif-dismiss {
+    background: none;
+    border: none;
+    color: var(--bs-secondary-color);
+    padding: 0.25rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.notif-dismiss:hover {
+    color: var(--bs-body-color);
+}
+
+/* Sidebar bottom bar (notifications bell), ported from AppShell.tsx */
+.sidebar-bottom {
+    margin-top: auto;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--bs-border-color);
+}
+
+.sidebar-bell {
+    position: relative;
+}
+
+.sidebar-bell .badge {
+    position: absolute;
+    top: -0.25rem;
+    right: -0.25rem;
+    font-size: 0.5625rem;
+    padding: 0.15em 0.35em;
 }

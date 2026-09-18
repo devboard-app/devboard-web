@@ -24,4 +24,5 @@ urlpatterns = [
     path('', include('teams.urls')),
     path('', include('projects.urls')),
     path('', include('attachments.urls')),
+    path('', include('notifications.urls')),
 ]

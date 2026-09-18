@@ -6,6 +6,7 @@ from django.views.decorators.http import require_POST
 
 from web.services.client import call
 from web.services.exceptions import ServiceError
+from web.services.notifications import get_unread_count
 from web.services.pagination import page_context
 from web.services.teams import get_my_team_role
 from web.services.users import resolve_usernames
@@ -41,9 +42,10 @@ async def team_create_view(request):
 
 
 async def team_detail_view(request, team_id):
-    team_result, members_result = await asyncio.gather(
+    team_result, members_result, unread_count = await asyncio.gather(
         call(request, 'GET', 'work', f'/api/teams/{team_id}/'),
         call(request, 'GET', 'work', f'/api/teams/{team_id}/members/', params={'limit': 100}),
+        get_unread_count(request),
         return_exceptions=True,
     )
 
@@ -69,6 +71,7 @@ async def team_detail_view(request, team_id):
         'team_id': team_id,
         'team_name': team['name'],
         'sidebar_active': 'team',
+        'unread_count': unread_count if isinstance(unread_count, int) else 0,
         'members': members,
         'my_role': my_role,
         'is_manager': my_role in MANAGER_ROLES,
@@ -104,12 +107,13 @@ async def team_edit_view(request, team_id):
         return render(request, 'error.html', {'detail': exc.detail}, status=exc.status_code)
 
     team = response.json()
-    my_role = await get_my_team_role(request, team_id)
+    my_role, unread_count = await asyncio.gather(get_my_team_role(request, team_id), get_unread_count(request))
     return render(request, 'teams/edit.html', {
         'team': team,
         'team_id': team_id,
         'team_name': team['name'],
         'sidebar_active': 'team',
+        'unread_count': unread_count,
         'is_owner': my_role == 'owner',
     })
 
