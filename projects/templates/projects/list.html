@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Projects{% endblock %}
+
+{% block sidebar %}{% include "partials/app_sidebar.html" %}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Projects</h1>
+    <div>
+        {% if can_create %}
+        <a href="/teams/{{ team_id }}/projects/create/" class="btn btn-primary">Create project</a>
+        {% endif %}
+    </div>
+</div>
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+    {% for project in results %}
+    <div class="col">
+        <a href="/teams/{{ team_id }}/projects/{{ project.id }}/" class="text-decoration-none text-body">
+            <div class="card h-100">
+                <div class="card-body">
+                    <span class="badge text-bg-light border mb-2">{{ project.key }}</span>
+                    <div class="fw-semibold">{{ project.name }}</div>
+                    <div class="text-secondary small">{{ project.description|default:"No description" }}</div>
+                </div>
+            </div>
+        </a>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <p class="text-secondary">No projects yet.</p>
+    </div>
+    {% endfor %}
+</div>
+{% include "partials/pagination.html" %}
+{% endblock %}

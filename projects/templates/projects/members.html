@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load ui_extras %}
+
+{% block title %}Project members{% endblock %}
+
+{% block sidebar %}{% include "partials/app_sidebar.html" %}{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">{{ project.name }} <span class="text-secondary fs-6">Members</span></h1>
+<div class="card">
+<table class="table mb-0">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Role</th>
+            {% if is_lead %}<th></th>{% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for member in members %}
+        <tr>
+            <td class="d-flex align-items-center gap-2">{% avatar member.username "sm" %} {{ member.username }}</td>
+            <td>
+                {% if is_lead %}
+                <form method="post" action="/teams/{{ team_id }}/projects/{{ project_id }}/members/{{ member.user_id }}/role/" class="d-flex gap-1">
+                    {% csrf_token %}
+                    <select name="role" class="form-select form-select-sm">
+                        <option value="lead" {% if member.role == 'lead' %}selected{% endif %}>Lead</option>
+                        <option value="contributor" {% if member.role == 'contributor' %}selected{% endif %}>Contributor</option>
+                    </select>
+                    <button type="submit" class="btn btn-outline-secondary btn-sm">Save</button>
+                </form>
+                {% else %}
+                <span class="badge text-bg-light border">{{ member.role }}</span>
+                {% endif %}
+            </td>
+            {% if is_lead %}
+            <td>
+                <form method="post" action="/teams/{{ team_id }}/projects/{{ project_id }}/members/{{ member.user_id }}/remove/">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Remove</button>
+                </form>
+            </td>
+            {% endif %}
+        </tr>
+        {% empty %}
+        <tr><td colspan="3" class="text-secondary">No members yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+{% if is_lead %}
+<h2 class="h5 mt-4">Add member</h2>
+{% if addable %}
+<form method="post" action="/teams/{{ team_id }}/projects/{{ project_id }}/members/add/" class="col-sm-6 d-flex gap-2">
+    {% csrf_token %}
+    <select name="user_id" class="form-select">
+        {% for user in addable %}
+        <option value="{{ user.user_id }}">{{ user.username }}</option>
+        {% endfor %}
+    </select>
+    <select name="role" class="form-select">
+        <option value="contributor" selected>Contributor</option>
+        <option value="lead">Lead</option>
+    </select>
+    <button type="submit" class="btn btn-primary text-nowrap">Add</button>
+</form>
+{% else %}
+<p class="text-secondary">Every team member is already on this project.</p>
+{% endif %}
+{% endif %}
+{% endblock %}

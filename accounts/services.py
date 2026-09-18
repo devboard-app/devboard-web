@@ -14,6 +14,9 @@ async def login(request, email: str, password: str) -> None:
     request.session['access_token_expires_at'] = expires_at.isoformat()
     request.session['email'] = email
 
+    me = await call(request, 'GET', 'core', '/api/users/me/')
+    request.session['user_id'] = me.json()['user_id']
+
 async def logout(request) -> None:
     refresh_token = request.session.get('refresh_token')
     if refresh_token:

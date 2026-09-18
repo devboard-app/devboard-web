@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load form_errors %}
+
+{% block title %}Create team{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/teams/">Teams</a></li>
+        <li class="breadcrumb-item active">Create</li>
+    </ol>
+</nav>
+<h1>Create team</h1>
+{% if error and not errors %}
+    <div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+<form method="post" class="col-sm-6">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <input type="text" name="name" value="{{ name|default:'' }}" class="form-control{% if errors|has_error:'name' %} is-invalid{% endif %}" required>
+        {% field_errors errors 'name' %}
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea name="description" class="form-control{% if errors|has_error:'description' %} is-invalid{% endif %}">{{ description|default:'' }}</textarea>
+        {% field_errors errors 'description' %}
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+{% endblock %}

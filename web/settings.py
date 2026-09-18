@@ -64,8 +64,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'dashboard',
+    'teams',
     'projects',
     'attachments',
+    'notifications',
 ]
 
 MIDDLEWARE = [
@@ -140,12 +142,20 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Bootstrap uses "danger", Django's default message tag is "error".
+from django.contrib.messages import constants as message_constants  # noqa: E402
+
+MESSAGE_TAGS = {
+    message_constants.ERROR: 'danger',
+}
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
 STORAGES = {
     "default": {

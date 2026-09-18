@@ -1,0 +1,31 @@
+{% load ui_extras %}
+{% comment %}
+Expects: team_id, team_name (optional), project (optional dict with id/key),
+sidebar_active ('team' | 'projects' | 'overview' | 'members').
+{% endcomment %}
+<div class="pb-2 mb-2 border-bottom">
+    <a href="/teams/{{ team_id }}/" class="sidebar-team-header{% if sidebar_active == 'team' %} active{% endif %}">
+        {% team_avatar team_name|default:"Team" %}
+        <span class="text-truncate">{{ team_name|default:"Team" }}</span>
+        <svg class="chevron" width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+<a href="/teams/{{ team_id }}/projects/" class="sidebar-link{% if sidebar_active == 'projects' %} active{% endif %}">Projects</a>
+
+{% if project %}
+<p class="sidebar-section-title mt-3">{{ project.key }}</p>
+<a href="/teams/{{ team_id }}/projects/{{ project.id }}/" class="sidebar-sublink{% if sidebar_active == 'overview' %} active{% endif %}">Overview</a>
+<a href="/teams/{{ team_id }}/projects/{{ project.id }}/members/" class="sidebar-sublink{% if sidebar_active == 'members' %} active{% endif %}">Members</a>
+{% endif %}
+
+<div class="sidebar-bottom">
+    <a href="/notifications/" class="sidebar-link sidebar-bell">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 2a4.5 4.5 0 00-4.5 4.5V9L2 11h12l-1.5-2V6.5A4.5 4.5 0 008 2zM6.5 13a1.5 1.5 0 003 0" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        Notifications
+        {% if unread_count %}<span class="badge text-bg-primary rounded-pill">{{ unread_count }}</span>{% endif %}
+    </a>
+</div>

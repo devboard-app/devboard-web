@@ -1,10 +1,23 @@
 {% extends "base.html" %}
 
-{% block title %}Project{% endblock %}
+{% block title %}{{ project.name }}{% endblock %}
+
+{% block sidebar %}{% include "partials/app_sidebar.html" %}{% endblock %}
 
 {% block content %}
-<h1>Tickets</h1>
-<table class="table">
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-0">{{ project.name }} <span class="text-secondary">({{ project.key }})</span></h1>
+        <p class="text-secondary mb-0">{{ project.description }}</p>
+    </div>
+    {% if is_lead %}
+    <a href="/teams/{{ team_id }}/projects/{{ project.id }}/edit/" class="btn btn-outline-secondary btn-sm">Project settings</a>
+    {% endif %}
+</div>
+
+<h2 class="h5">Tickets</h2>
+<div class="card mb-4">
+<table class="table mb-0">
     <thead>
         <tr>
             <th>Key</th>
@@ -16,27 +29,46 @@
     <tbody>
         {% for ticket in tickets %}
         <tr>
-            <td>{{ ticket.key }}</td>
+            <td class="text-secondary">{{ ticket.key }}</td>
             <td>{{ ticket.title }}</td>
-            <td>{{ ticket.status }}</td>
-            <td>{{ ticket.priority }}</td>
+            <td>
+                <span class="badge rounded-pill
+                    {% if ticket.status == 'done' %}text-bg-success
+                    {% elif ticket.status == 'in_progress' %}text-bg-primary
+                    {% elif ticket.status == 'in_review' %}text-bg-warning
+                    {% elif ticket.status == 'cancelled' %}text-bg-secondary
+                    {% else %}text-bg-light border{% endif %}">
+                    {{ ticket.status }}
+                </span>
+            </td>
+            <td>
+                <span class="{% if ticket.priority == 'urgent' %}text-danger
+                    {% elif ticket.priority == 'high' %}text-warning
+                    {% elif ticket.priority == 'medium' %}text-secondary
+                    {% else %}text-body-tertiary{% endif %}">
+                    {{ ticket.priority }}
+                </span>
+            </td>
         </tr>
         {% empty %}
-        <tr><td colspan="4">No tickets yet.</td></tr>
+        <tr><td colspan="4" class="text-secondary">No tickets yet.</td></tr>
         {% endfor %}
     </tbody>
 </table>
+</div>
 
-<h2>Activity</h2>
+<h2 class="h5">Activity</h2>
 {% if activity %}
-<ul class="list-group">
+<div class="card">
+<ul class="list-group list-group-flush">
     {% for actor in activity.actors %}
     <li class="list-group-item">{{ actor.actor }} — {{ actor.total }} actions</li>
     {% empty %}
-    <li class="list-group-item text-muted">No activity recorded for this project yet.</li>
+    <li class="list-group-item text-secondary">No activity recorded for this project yet.</li>
     {% endfor %}
 </ul>
+</div>
 {% else %}
-<p class="text-muted">Activity summary is temporarily unavailable.</p>
+<p class="text-secondary">Activity summary is temporarily unavailable.</p>
 {% endif %}
 {% endblock %}

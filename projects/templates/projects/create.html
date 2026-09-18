@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load form_errors %}
+
+{% block title %}Create project{% endblock %}
+
+{% block sidebar %}{% include "partials/app_sidebar.html" %}{% endblock %}
+
+{% block content %}
+<h1>Create project</h1>
+{% if error and not errors %}
+    <div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+<form method="post" class="col-sm-6">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <input type="text" name="name" value="{{ name|default:'' }}" class="form-control{% if errors|has_error:'name' %} is-invalid{% endif %}" required>
+        {% field_errors errors 'name' %}
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Key</label>
+        <input type="text" name="key" value="{{ key|default:'' }}" maxlength="10" class="form-control text-uppercase{% if errors|has_error:'key' %} is-invalid{% endif %}" placeholder="e.g. DBF" required>
+        <div class="form-text">2-10 uppercase letters/numbers. Tickets will be named {{ key|default:'KEY' }}-1, {{ key|default:'KEY' }}-2, ...</div>
+        {% field_errors errors 'key' %}
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea name="description" class="form-control{% if errors|has_error:'description' %} is-invalid{% endif %}">{{ description|default:'' }}</textarea>
+        {% field_errors errors 'description' %}
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a href="/teams/{{ team_id }}/projects/" class="btn btn-outline-secondary">Cancel</a>
+</form>
+{% endblock %}

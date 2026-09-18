@@ -1,0 +1,478 @@
+/* Design tokens ported from the devboard-design (Figma Make) prototype.
+   Overrides Bootstrap 5's own CSS custom properties, so every stock
+   component (buttons, badges, cards, nav) picks these up for free --
+   no new markup needed, just the variables Bootstrap already reads. */
+
+:root {
+    --bs-font-sans-serif: 'Inter', system-ui, -apple-system, sans-serif;
+
+    --bs-primary: #4f46e5;
+    --bs-primary-rgb: 79, 70, 229;
+    --bs-link-color: #4f46e5;
+    --bs-link-color-rgb: 79, 70, 229;
+    --bs-link-hover-color: #4338ca;
+    --bs-link-hover-color-rgb: 67, 56, 202;
+
+    --bs-border-radius: 0.5rem;
+    --bs-border-radius-sm: 0.375rem;
+    --bs-border-radius-lg: 0.75rem;
+
+    --bs-body-bg: #fafafa;
+    --bs-body-color: #27272a;
+    --bs-secondary-color: #71717a;
+    --bs-border-color: #e4e4e7;
+    --bs-tertiary-bg: #f4f4f5;
+
+    --db-sidebar-bg: #ffffff;
+    --db-sidebar-active-bg: #eef2ff;
+    --db-sidebar-active-color: #4338ca;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bs-body-bg: #09090b;
+        --bs-body-color: #e4e4e7;
+        --bs-secondary-color: #a1a1aa;
+        --bs-border-color: #27272a;
+        --bs-tertiary-bg: #18181b;
+        --bs-primary: #818cf8;
+        --bs-primary-rgb: 129, 140, 248;
+        --bs-link-color: #818cf8;
+        --bs-link-color-rgb: 129, 140, 248;
+
+        --db-sidebar-bg: #18181b;
+        --db-sidebar-active-bg: rgba(99, 102, 241, 0.15);
+        --db-sidebar-active-color: #a5b4fc;
+    }
+
+    body {
+        color-scheme: dark;
+    }
+
+    .card, .navbar, .list-group-item, .form-control, .form-select,
+    .table, .breadcrumb, .dropdown-menu {
+        background-color: var(--bs-tertiary-bg);
+        color: var(--bs-body-color);
+        border-color: var(--bs-border-color);
+    }
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Bootstrap has no min-width-0 utility (unlike Tailwind) -- needed so
+   flex children with text-truncate actually truncate instead of
+   overflowing, since flex items default to min-width: auto. */
+.min-width-0 {
+    min-width: 0;
+}
+
+.btn {
+    border-radius: var(--bs-border-radius);
+}
+
+/* Bootstrap's compiled CSS bakes literal hex values into each component's
+   own per-component variables (--bs-btn-bg, --bs-badge-color, etc) at
+   build time -- they don't chain to the root --bs-primary token above,
+   so buttons/badges need their own override to pick up the new palette. */
+.btn-primary {
+    --bs-btn-bg: var(--bs-primary);
+    --bs-btn-border-color: var(--bs-primary);
+    --bs-btn-hover-bg: var(--bs-link-hover-color);
+    --bs-btn-hover-border-color: var(--bs-link-hover-color);
+    --bs-btn-active-bg: var(--bs-link-hover-color);
+    --bs-btn-active-border-color: var(--bs-link-hover-color);
+    --bs-btn-disabled-bg: var(--bs-primary);
+    --bs-btn-disabled-border-color: var(--bs-primary);
+}
+
+.btn-outline-primary {
+    --bs-btn-color: var(--bs-primary);
+    --bs-btn-border-color: var(--bs-primary);
+    --bs-btn-hover-bg: var(--bs-primary);
+    --bs-btn-hover-border-color: var(--bs-primary);
+    --bs-btn-active-bg: var(--bs-primary);
+    --bs-btn-active-border-color: var(--bs-primary);
+}
+
+.badge.text-bg-primary {
+    --bs-badge-color: #fff;
+    background-color: var(--bs-primary) !important;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.15);
+}
+
+.card, .table, .breadcrumb {
+    border-radius: var(--bs-border-radius);
+}
+
+/* App shell: sidebar + content, ported from AppShell.tsx's layout */
+.app-shell {
+    display: flex;
+    min-height: 100vh;
+}
+
+.app-sidebar {
+    width: 15rem;
+    flex-shrink: 0;
+    background: var(--db-sidebar-bg);
+    border-right: 1px solid var(--bs-border-color);
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.app-sidebar:empty {
+    display: none;
+}
+
+.app-main {
+    flex: 1;
+    min-width: 0;
+    padding: 1.5rem;
+}
+
+.sidebar-section-title {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--bs-secondary-color);
+    padding: 0 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.5rem;
+    border-radius: var(--bs-border-radius-sm);
+    font-size: 0.875rem;
+    color: var(--bs-secondary-color);
+    text-decoration: none;
+    margin-bottom: 2px;
+}
+
+.sidebar-link:hover {
+    background: var(--bs-tertiary-bg);
+    color: var(--bs-body-color);
+}
+
+.sidebar-link.active {
+    background: var(--db-sidebar-active-bg);
+    color: var(--db-sidebar-active-color);
+    font-weight: 500;
+}
+
+.sidebar-sublink {
+    display: block;
+    padding: 0.25rem 0.5rem 0.25rem 1.5rem;
+    font-size: 0.8125rem;
+    color: var(--bs-secondary-color);
+    text-decoration: none;
+    border-radius: var(--bs-border-radius-sm);
+}
+
+.sidebar-sublink:hover {
+    color: var(--bs-body-color);
+}
+
+.sidebar-sublink.active {
+    color: var(--db-sidebar-active-color);
+    font-weight: 500;
+}
+
+/* Avatar circle: initials on a deterministic color, ported from AppShell.tsx's Avatar() */
+.avatar-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 50%;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.75rem;
+    width: 1.75rem;
+    height: 1.75rem;
+}
+
+.avatar-circle-sm {
+    width: 1.375rem;
+    height: 1.375rem;
+    font-size: 0.625rem;
+}
+
+/* Team mark: rounded square, ported from AppShell.tsx's team-switcher avatar */
+.avatar-square {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: var(--bs-border-radius-sm);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.75rem;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.sidebar-team-header {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.375rem 0.5rem;
+    border-radius: var(--bs-border-radius-sm);
+    text-decoration: none;
+    color: var(--bs-body-color);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.sidebar-team-header:hover {
+    background: var(--bs-tertiary-bg);
+    color: var(--bs-body-color);
+}
+
+.sidebar-team-header .chevron {
+    margin-left: auto;
+    color: var(--bs-secondary-color);
+    flex-shrink: 0;
+}
+
+/* Centered auth card -- structure and exact measurements ported from
+   devboard-design's AuthScreen.tsx (max-w-sm, p-8, rounded-xl, etc). */
+.auth-wrap {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 24rem; /* max-w-sm */
+}
+
+.auth-logo-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem; /* gap-2.5 */
+    margin-bottom: 2rem; /* mb-8 */
+}
+
+.auth-logo {
+    width: 2rem;   /* w-8 h-8 */
+    height: 2rem;
+    border-radius: var(--bs-border-radius);
+    background: var(--bs-primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.auth-brand {
+    font-size: 1.125rem; /* text-lg */
+    font-weight: 600;
+    letter-spacing: -0.01em; /* tracking-tight */
+}
+
+.auth-card {
+    border-radius: var(--bs-border-radius-lg); /* rounded-xl */
+    padding: 2rem; /* p-8 */
+}
+
+.auth-card h1 {
+    font-size: 1.25rem; /* text-xl */
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.auth-sub {
+    font-size: 0.875rem;
+    color: var(--bs-secondary-color);
+    margin-bottom: 1.5rem; /* mb-6 */
+}
+
+.auth-field {
+    margin-bottom: 1rem; /* space-y-4 */
+}
+
+.auth-field:last-of-type {
+    margin-bottom: 0;
+}
+
+.auth-field label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.375rem; /* mb-1.5 */
+}
+
+.auth-field .form-control {
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem; /* px-3 py-2 */
+}
+
+.auth-submit {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-top: 1rem;
+}
+
+.auth-footer {
+    margin-top: 1.5rem; /* mt-6 */
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--bs-secondary-color);
+}
+
+.auth-terms {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--bs-secondary-color);
+    opacity: 0.8;
+}
+
+.auth-icon-circle {
+    width: 3rem; /* w-12 h-12 */
+    height: 3rem;
+    border-radius: 50%;
+    background: var(--db-sidebar-active-bg);
+    color: var(--db-sidebar-active-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+.auth-icon-circle.danger {
+    background: rgba(220, 38, 38, 0.1);
+    color: #dc2626;
+}
+
+/* Notifications list, ported from NotificationsPanel.tsx (rendered as a full
+   page here instead of a slide-over panel -- that needs JS this project
+   doesn't use). */
+.notif-container {
+    max-width: 32rem;
+}
+
+.notif-section-title {
+    padding: 0.5rem 0;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--bs-secondary-color);
+    border-bottom: 1px solid var(--bs-border-color);
+}
+
+.notif-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.875rem 0;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--bs-border-color);
+    text-align: left;
+}
+
+button.notif-row {
+    cursor: pointer;
+}
+
+button.notif-row:hover {
+    background: var(--bs-tertiary-bg);
+}
+
+.notif-row.unread {
+    background: rgba(var(--bs-primary-rgb), 0.05);
+}
+
+.notif-icon {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--bs-tertiary-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.notif-icon.type-mention { color: #4f46e5; }
+.notif-icon.type-assignment { color: #2563eb; }
+.notif-icon.type-comment { color: #059669; }
+.notif-icon.type-status_change { color: #d97706; }
+
+.notif-message {
+    font-size: 0.875rem;
+    line-height: 1.35;
+}
+
+.notif-row.unread .notif-message {
+    font-weight: 500;
+}
+
+.notif-meta {
+    font-size: 0.6875rem;
+    color: var(--bs-secondary-color);
+    margin-top: 0.25rem;
+    display: block;
+}
+
+.notif-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--bs-primary);
+    flex-shrink: 0;
+    margin-top: 0.375rem;
+}
+
+.notif-dismiss {
+    background: none;
+    border: none;
+    color: var(--bs-secondary-color);
+    padding: 0.25rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.notif-dismiss:hover {
+    color: var(--bs-body-color);
+}
+
+/* Sidebar bottom bar (notifications bell), ported from AppShell.tsx */
+.sidebar-bottom {
+    margin-top: auto;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--bs-border-color);
+}
+
+.sidebar-bell {
+    position: relative;
+}
+
+.sidebar-bell .badge {
+    position: absolute;
+    top: -0.25rem;
+    right: -0.25rem;
+    font-size: 0.5625rem;
+    padding: 0.15em 0.35em;
+}

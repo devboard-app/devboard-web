@@ -1,0 +1,14 @@
+{% comment %}Ported from NotificationsPanel.tsx's NotifIcon(). Expects: type.{% endcomment %}
+<span class="notif-icon type-{{ type }}">
+    {% if type == 'mention' %}
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 8.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM9.5 6a4.5 4.5 0 11-2 3.78V11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+    {% elif type == 'assignment' %}
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M2 12c0-2.21 2.24-4 5-4s5 1.79 5 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+    {% elif type == 'comment' %}
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2.5h10v7H8.5L7 11 5.5 9.5H2V2.5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+    {% elif type == 'status_change' %}
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    {% else %}
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.2"/></svg>
+    {% endif %}
+</span>
