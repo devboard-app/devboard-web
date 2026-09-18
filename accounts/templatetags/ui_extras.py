@@ -28,3 +28,15 @@ def avatar(name, size=''):
         '<span class="avatar-circle {}" style="background-color: {}" title="{}">{}</span>',
         size_class, color, name, _initials(name),
     )
+
+
+@register.simple_tag
+def team_avatar(name):
+    """Rounded-square single-letter mark for a team, ported from AppShell.tsx's
+    team-switcher button (currentTeam.avatarColor / currentTeam.name[0])."""
+    name = name or '?'
+    color = AVATAR_COLORS[sum(ord(c) for c in name) % len(AVATAR_COLORS)]
+    return format_html(
+        '<span class="avatar-square" style="background-color: {}">{}</span>',
+        color, name[0].upper(),
+    )

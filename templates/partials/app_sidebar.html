@@ -1,10 +1,15 @@
+{% load ui_extras %}
 {% comment %}
 Expects: team_id, team_name (optional), project (optional dict with id/key),
 sidebar_active ('team' | 'projects' | 'overview' | 'members').
 {% endcomment %}
-<div class="px-2 py-2 mb-2 border-bottom">
-    <a href="/teams/{{ team_id }}/" class="sidebar-link fw-semibold{% if sidebar_active == 'team' %} active{% endif %}">
-        {{ team_name|default:"Team" }}
+<div class="pb-2 mb-2 border-bottom">
+    <a href="/teams/{{ team_id }}/" class="sidebar-team-header{% if sidebar_active == 'team' %} active{% endif %}">
+        {% team_avatar team_name|default:"Team" %}
+        <span class="text-truncate">{{ team_name|default:"Team" }}</span>
+        <svg class="chevron" width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
     </a>
 </div>
 <a href="/teams/{{ team_id }}/projects/" class="sidebar-link{% if sidebar_active == 'projects' %} active{% endif %}">Projects</a>

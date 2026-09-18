@@ -5,35 +5,33 @@
 
 {% block content %}
 <div class="auth-wrap">
-    <div class="text-center mb-4">
-        <span class="auth-logo mb-2">D</span>
-        <div class="fw-semibold fs-5">DevBoard</div>
-    </div>
+<div class="auth-container">
+    {% include "partials/auth_logo.html" %}
+
     <div class="card auth-card">
-        <div class="card-body p-4">
-            <h1 class="h4 mb-1">Create your account</h1>
-            <p class="text-secondary small mb-4">Start managing your projects</p>
-            {% if error and not errors %}
-                <div class="alert alert-danger">{{ error }}</div>
-            {% endif %}
-            <form method="post">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" name="email" value="{{ email|default:'' }}" class="form-control{% if errors|has_error:'email' %} is-invalid{% endif %}" required>
-                    {% field_errors errors 'email' %}
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Password</label>
-                    <input type="password" name="password" class="form-control{% if errors|has_error:'password' %} is-invalid{% endif %}" required>
-                    {% field_errors errors 'password' %}
-                </div>
-                <button type="submit" class="btn btn-primary w-100">Register</button>
-            </form>
-            <p class="text-center small text-secondary mt-3 mb-0">
-                <a href="/login/">Already have an account? Log in</a>
-            </p>
-        </div>
+        <h1>Create your account</h1>
+        <p class="auth-sub">Start a free workspace, no card required</p>
+        {% if error and not errors %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="auth-field">
+                <label class="form-label">Work email</label>
+                <input type="email" name="email" value="{{ email|default:'' }}" class="form-control{% if errors|has_error:'email' %} is-invalid{% endif %}" placeholder="ada@company.com" required>
+                {% field_errors errors 'email' %}
+            </div>
+            <div class="auth-field">
+                <label class="form-label">Password</label>
+                <input type="password" name="password" class="form-control{% if errors|has_error:'password' %} is-invalid{% endif %}" placeholder="At least 8 characters" required>
+                {% field_errors errors 'password' %}
+            </div>
+            <button type="submit" class="btn btn-primary auth-submit">Create account</button>
+        </form>
+        <p class="auth-footer mb-0">Already have an account? <a href="/login/" class="fw-medium">Sign in</a></p>
     </div>
+
+    <p class="auth-terms">By continuing, you agree to DevBoard's Terms and Privacy Policy</p>
+</div>
 </div>
 {% endblock %}

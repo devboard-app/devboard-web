@@ -4,22 +4,42 @@
 {% block title %}Resend verification email{% endblock %}
 
 {% block content %}
-<h1>Resend verification email</h1>
-{% if sent %}
-    <div class="alert alert-success">If that email exists and isn't verified yet, we've sent a new link.</div>
-    <a href="/login/">Back to login</a>
-{% else %}
-    {% if error and not errors %}
-        <div class="alert alert-danger">{{ error }}</div>
-    {% endif %}
-    <form method="post" class="col-sm-6">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input type="email" name="email" value="{{ email|default:'' }}" class="form-control{% if errors|has_error:'email' %} is-invalid{% endif %}" required>
-            {% field_errors errors 'email' %}
+<div class="auth-wrap">
+<div class="auth-container">
+    {% include "partials/auth_logo.html" %}
+
+    {% if sent %}
+    <div class="card auth-card text-center">
+        <div class="auth-icon-circle">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M2.5 6.5L10 11.5L17.5 6.5M3 15h14a1 1 0 001-1V6a1 1 0 00-1-1H3a1 1 0 00-1 1v8a1 1 0 001 1z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
         </div>
-        <button type="submit" class="btn btn-primary">Send</button>
-    </form>
-{% endif %}
+        <h1>Check your email</h1>
+        <p class="auth-sub">
+            If <span class="fw-medium text-body">{{ email }}</span> exists and isn't verified yet, we've sent a new link.
+        </p>
+        <a href="/login/" class="d-inline-block text-secondary text-decoration-none small">← Back to sign in</a>
+    </div>
+    {% else %}
+    <div class="card auth-card">
+        <h1>Resend verification email</h1>
+        <p class="auth-sub">Enter your email and we'll send a new verification link.</p>
+        {% if error and not errors %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="auth-field">
+                <label class="form-label">Email</label>
+                <input type="email" name="email" value="{{ email|default:'' }}" class="form-control{% if errors|has_error:'email' %} is-invalid{% endif %}" placeholder="you@company.com" required>
+                {% field_errors errors 'email' %}
+            </div>
+            <button type="submit" class="btn btn-primary auth-submit">Send</button>
+        </form>
+        <p class="auth-footer mb-0"><a href="/login/" class="fw-medium">← Back to sign in</a></p>
+    </div>
+    {% endif %}
+</div>
+</div>
 {% endblock %}

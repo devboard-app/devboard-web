@@ -3,12 +3,32 @@
 {% block title %}Verify email{% endblock %}
 
 {% block content %}
-<h1>Email verification</h1>
-{% if verified %}
-    <div class="alert alert-success">Your email is verified. You can log in now.</div>
-    <a href="/login/" class="btn btn-primary">Log in</a>
-{% else %}
-    <div class="alert alert-danger">{{ error }}</div>
-    <p><a href="/resend-verification/">Request a new verification email</a></p>
-{% endif %}
+<div class="auth-wrap">
+<div class="auth-container">
+    {% include "partials/auth_logo.html" %}
+
+    <div class="card auth-card text-center">
+        {% if verified %}
+        <div class="auth-icon-circle">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M4 10.5L8 14.5L16 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <h1>Email verified</h1>
+        <p class="auth-sub">Your email is verified. You can sign in now.</p>
+        <a href="/login/" class="btn btn-primary auth-submit">Sign in</a>
+        {% else %}
+        <div class="auth-icon-circle danger">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M10 6.5v4.5M10 14h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+        </div>
+        <h1>Verification failed</h1>
+        <p class="auth-sub">{{ error }}</p>
+        <a href="/resend-verification/" class="d-inline-block text-secondary text-decoration-none small">Request a new verification email</a>
+        {% endif %}
+    </div>
+</div>
+</div>
 {% endblock %}
